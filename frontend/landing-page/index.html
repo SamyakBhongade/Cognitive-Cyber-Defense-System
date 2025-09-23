@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognitive Cyber Defense System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🛡️ Cognitive Cyber Defense System</h1>
+        <p>AI-Powered Real-time Threat Detection Platform</p>
+    </header>
+
+    <main class="dashboard-grid">
+        <div class="detection-card" onclick="loadModule('anomaly')">
+            <div class="card-icon">🔍</div>
+            <h3>Anomaly Detection</h3>
+            <p>ML-powered network anomaly detection</p>
+            <div class="status deployed">✅ Deployed</div>
+            <div class="developer">By: Samyak</div>
+        </div>
+
+        <div class="detection-card" onclick="loadModule('phishing')">
+            <div class="card-icon">🎣</div>
+            <h3>Phishing Detection</h3>
+            <p>Email & URL phishing analysis</p>
+            <div class="status development">🔄 In Progress</div>
+            <div class="developer">By: Rushabh</div>
+        </div>
+
+        <div class="detection-card" onclick="loadModule('insider')">
+            <div class="card-icon">👤</div>
+            <h3>Insider Threat Detection</h3>
+            <p>Behavioral analysis & user monitoring</p>
+            <div class="status development">🔄 In Progress</div>
+            <div class="developer">By: Riddhi</div>
+        </div>
+    </main>
+
+    <div id="module-container" class="hidden">
+        <iframe id="module-frame" src="" frameborder="0"></iframe>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
