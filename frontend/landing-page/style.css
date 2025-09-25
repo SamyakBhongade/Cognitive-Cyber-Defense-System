@@ -148,6 +148,7 @@ body {
     justify-content: center;
     text-align: center;
     padding: 2rem;
+    padding-top: 120px;
     position: relative;
 }
 
@@ -167,6 +168,21 @@ body {
     color: #00ffff;
 }
 
+.hero-content p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-content p:last-of-type {
+    margin-bottom: 3rem;
+    font-weight: 500;
+    color: #00ff7f;
+}
+
 .cta-button {
     background: linear-gradient(45deg, #00ffff, #00ff7f);
     color: #0a0a0a;
@@ -177,7 +193,7 @@ body {
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 3rem;
+    margin: 0 1rem 3rem 1rem;
 }
 
 .cta-button:hover {
@@ -411,6 +427,12 @@ body {
     color: #0a0a0a;
 }
 
+.member-description {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+}
+
 /* Contact Section */
 .contact-content {
     text-align: center;
@@ -535,6 +557,10 @@ body {
 
     .hamburger {
         display: flex;
+    }
+
+    .hero {
+        padding-top: 100px;
     }
 
     .hero-content h1 {

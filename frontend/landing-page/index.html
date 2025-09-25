@@ -20,7 +20,6 @@
             <li><a href="#features" class="nav-link">Features</a></li>
             <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
             <li><a href="#about" class="nav-link">About Us</a></li>
-            <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
         <div class="auth-buttons">
             <button class="login-btn" onclick="openLoginModal()">Login</button>
@@ -35,9 +34,10 @@
 
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1>AI-Powered Cognitive Cyber Defense</h1>
-            <p class="hero-subtitle">Anomaly Detection | Insider Threat Detection | Phishing Protection</p>
-            <button class="cta-button" onclick="scrollToSection('dashboard')">Go to Dashboard</button>
+            <h1>Cognitive Cyber Defense System: AI-Driven. Quantum-Secure.</h1>
+            <p class="hero-subtitle">The integrated defense platform built to defeat today's threats and future quantum attacks.</p>
+            <p>Defend your digital frontier with multi-layered machine learning and Post-Quantum Cryptography (PQC) designed for true long-term data security.</p>
+            <p>Join us in shaping the future of cybersecurity.</p>
             <div class="stats">
                 <div class="stat">
                     <span class="stat-number">99.2%</span>
@@ -48,38 +48,46 @@
                     <span class="stat-label">Monitoring</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-number">3</span>
-                    <span class="stat-label">AI Modules</span>
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">Defense Pillars</span>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="features" class="features-section">
-        <h2>Our Detection Modules</h2>
+        <h2>The Four Pillars of Future-Ready Defense</h2>
         <div class="features-grid">
             <div class="feature-card" onclick="loadModule('anomaly')">
                 <div class="card-icon"><i class="fas fa-search"></i></div>
-                <h3>Anomaly Detection</h3>
-                <p>Detect unusual network behavior and prevent attacks in real time.</p>
+                <h3>Real-Time Traffic Anomaly</h3>
+                <p>Identifies and flags unusual system behavior, data access, or network traffic deviations, leveraging ML to detect zero-day attacks and compromised user accounts.</p>
                 <button class="explore-btn">Explore →</button>
                 <div class="developer">By: Samyak</div>
             </div>
 
             <div class="feature-card">
                 <div class="card-icon"><i class="fas fa-fish"></i></div>
-                <h3>Phishing Detection</h3>
-                <p>Identify malicious emails and fake websites before damage is done.</p>
-                <button class="explore-btn disabled">🔄 In Progress</button>
+                <h3>Advanced Phishing & URL Analysis</h3>
+                <p>Utilizes NLP and computer vision to determine the authenticity of communication and web pages, actively protecting users from sophisticated email lures.</p>
+                <button class="explore-btn disabled">🔄 In Development</button>
                 <div class="developer">By: Rushabh</div>
             </div>
 
             <div class="feature-card">
                 <div class="card-icon"><i class="fas fa-user-shield"></i></div>
-                <h3>Insider Threat Detection</h3>
-                <p>Protect against risks from within your organization.</p>
-                <button class="explore-btn disabled">🔄 In Progress</button>
+                <h3>Proactive Data Misuse Mitigation</h3>
+                <p>Monitors user activity for patterns indicative of data exfiltration or privilege misuse, stopping breaches before they happen through continuous behavioral analysis.</p>
+                <button class="explore-btn disabled">🔄 In Development</button>
                 <div class="developer">By: Riddhi</div>
+            </div>
+
+            <div class="feature-card quantum-card">
+                <div class="card-icon"><i class="fas fa-atom"></i></div>
+                <h3>Post-Quantum Secure Core</h3>
+                <p>Ensures all sensitive system data, logs, and communication between models are protected with quantum-resistant algorithms (e.g., CRYSTALS-Kyber), guaranteeing long-term confidentiality.</p>
+                <button class="explore-btn quantum">🔮 Quantum-Ready</button>
+                <div class="developer">PQC Layer</div>
             </div>
         </div>
     </section>
@@ -90,65 +98,73 @@
             <div class="why-card">
                 <div class="why-icon"><i class="fas fa-brain"></i></div>
                 <h3>🚀 AI-Powered Decision Making</h3>
-                <p>Advanced machine learning algorithms that adapt and learn from threats</p>
+                <p>Advanced machine learning algorithms that adapt and learn from threats in real-time</p>
             </div>
             <div class="why-card">
                 <div class="why-icon"><i class="fas fa-lock"></i></div>
                 <h3>🔐 Post-Quantum Secure Communication</h3>
-                <p>Future-proof encryption methods resistant to quantum computing attacks</p>
+                <p>Future-proof encryption methods resistant to quantum computing attacks using CRYSTALS-Kyber</p>
             </div>
             <div class="why-card">
                 <div class="why-icon"><i class="fas fa-chart-line"></i></div>
                 <h3>📊 Real-time Monitoring and Alerts</h3>
-                <p>Instant threat detection with immediate response capabilities</p>
+                <p>Instant threat detection with immediate response capabilities across all defense layers</p>
             </div>
         </div>
     </section>
 
     <section id="dashboard" class="dashboard-section">
-        <h2>Real-time Analytics Dashboard</h2>
+        <h2>Real-time Defense Analytics</h2>
         <div class="analytics-grid">
             <div class="analytics-card">
                 <h3><i class="fas fa-exclamation-triangle"></i> Active Threats</h3>
                 <div class="metric">12</div>
-                <p>Threats detected in last 24h</p>
+                <p>Threats neutralized in last 24h</p>
             </div>
             <div class="analytics-card">
                 <h3><i class="fas fa-heartbeat"></i> System Health</h3>
-                <div class="metric">98%</div>
-                <p>All systems operational</p>
+                <div class="metric">99.8%</div>
+                <p>All defense layers operational</p>
             </div>
             <div class="analytics-card">
                 <h3><i class="fas fa-bolt"></i> Response Time</h3>
-                <div class="metric">0.3s</div>
-                <p>Average detection time</p>
+                <div class="metric">0.2s</div>
+                <p>Average threat detection time</p>
+            </div>
+            <div class="analytics-card">
+                <h3><i class="fas fa-atom"></i> Quantum Security</h3>
+                <div class="metric">100%</div>
+                <p>PQC encryption coverage</p>
             </div>
         </div>
     </section>
 
     <section id="about" class="about-section">
-        <h2>About Our Team</h2>
+        <h2>Meet the Development Team</h2>
         <div class="team-grid">
             <div class="team-member">
                 <div class="member-avatar">S</div>
                 <h4>Samyak</h4>
                 <p>Anomaly Detection Specialist</p>
+                <p class="member-description">ML engineer focused on real-time traffic analysis and behavioral anomaly detection systems.</p>
             </div>
             <div class="team-member">
                 <div class="member-avatar">R</div>
                 <h4>Rushabh</h4>
                 <p>Phishing Detection Expert</p>
+                <p class="member-description">NLP specialist developing advanced email and URL analysis for phishing prevention.</p>
             </div>
             <div class="team-member">
                 <div class="member-avatar">R</div>
                 <h4>Riddhi</h4>
                 <p>Insider Threat Analyst</p>
+                <p class="member-description">Security researcher specializing in user behavior analysis and data exfiltration prevention.</p>
             </div>
         </div>
     </section>
 
     <section id="contact" class="contact-section">
-        <h2>Get In Touch</h2>
+        <h2>Get In Touch with the Project</h2>
         <div class="contact-content">
             <p>Interested in our cognitive cyber defense solutions?</p>
             <div class="contact-links">

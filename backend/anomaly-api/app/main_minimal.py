@@ -1,0 +1,1 @@
+from .main_simple import app
