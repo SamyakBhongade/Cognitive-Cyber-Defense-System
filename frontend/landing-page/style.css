@@ -59,6 +59,12 @@ body {
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
 .nav-brand {
     display: flex;
     align-items: center;
@@ -344,40 +350,7 @@ body {
     margin-bottom: 1rem;
 }
 
-/* Analytics Section */
-.analytics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-}
 
-.analytics-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 2rem;
-    text-align: center;
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    transition: all 0.3s ease;
-}
-
-.analytics-card:hover {
-    border-color: #00ffff;
-    transform: translateY(-5px);
-}
-
-.analytics-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #00ffff;
-}
-
-.metric {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #00ff7f;
-    margin: 1rem 0;
-}
 
 /* Team Section */
 .team-grid {

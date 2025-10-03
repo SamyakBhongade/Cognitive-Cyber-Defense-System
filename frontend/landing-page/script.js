@@ -201,31 +201,40 @@ const users = JSON.parse(localStorage.getItem('cyberDefenseUsers') || '[]');
 let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
 
 // Login Form Handler
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+async function handleLogin(e) {
     e.preventDefault();
     
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
-    // Find user
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-        currentUser = user;
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        showMessage('Login successful! Welcome back.', 'success', 'loginForm');
+    try {
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
         
-        setTimeout(() => {
-            closeModal('loginModal');
-            updateAuthUI();
-        }, 1500);
-    } else {
-        showMessage('Invalid email or password.', 'error', 'loginForm');
+        const result = await response.json();
+        
+        if (result.success) {
+            currentUser = result.user;
+            localStorage.setItem('currentUser', JSON.stringify(result.user));
+            showMessage('Login successful! Welcome back.', 'success', 'loginForm');
+            
+            setTimeout(() => {
+                closeModal('loginModal');
+                updateAuthUI();
+            }, 1500);
+        } else {
+            showMessage(result.message, 'error', 'loginForm');
+        }
+    } catch (error) {
+        showMessage('Connection error. Please try again.', 'error', 'loginForm');
     }
-});
+}
 
 // Signup Form Handler
-document.getElementById('signupForm').addEventListener('submit', function(e) {
+document.getElementById('signupForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const name = document.getElementById('signupName').value;
@@ -257,23 +266,28 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
         return;
     }
     
-    // Check if user exists
-    if (users.find(u => u.email === email)) {
-        showMessage('User with this email already exists.', 'error', 'signupForm');
-        return;
+    try {
+        const response = await fetch('http://localhost:5000/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showMessage('Account created successfully! You can now login.', 'success', 'signupForm');
+            
+            setTimeout(() => {
+                closeModal('signupModal');
+                openLoginModal();
+            }, 1500);
+        } else {
+            showMessage(result.message, 'error', 'signupForm');
+        }
+    } catch (error) {
+        showMessage('Connection error. Please try again.', 'error', 'signupForm');
     }
-    
-    // Create new user
-    const newUser = { name, email, password, joinDate: new Date().toISOString() };
-    users.push(newUser);
-    localStorage.setItem('cyberDefenseUsers', JSON.stringify(users));
-    
-    showMessage('Account created successfully! You can now login.', 'success', 'signupForm');
-    
-    setTimeout(() => {
-        closeModal('signupModal');
-        openLoginModal();
-    }, 1500);
 });
 
 // Real-time email validation for signup
