@@ -7,6 +7,17 @@ CORS(app)
 
 db = UserDatabase()
 
+@app.route('/')
+def home():
+    return jsonify({
+        "message": "Cognitive Cyber Defense - Authentication API",
+        "status": "running",
+        "endpoints": {
+            "register": "/api/register",
+            "login": "/api/login"
+        }
+    })
+
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()

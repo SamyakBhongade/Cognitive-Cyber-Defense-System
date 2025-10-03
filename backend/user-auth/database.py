@@ -7,7 +7,7 @@ class UserDatabase:
         self.config = {
             'host': 'localhost',
             'user': 'root',
-            'password': '',
+            'password': 'Samyak@04',
             'database': 'cyber_defense_db'
         }
         self.init_database()
