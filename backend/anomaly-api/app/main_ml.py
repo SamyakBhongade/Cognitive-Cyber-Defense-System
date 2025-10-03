@@ -63,14 +63,22 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-# Global ML components
+# Global ML components and alert storage
 class MLState:
     def __init__(self):
         self.engine = None
         self.feature_extractor = None
         self.available = False
+        self.alerts = []  # In-memory alert storage
+        self.max_alerts = 1000  # Keep last 1000 alerts
 
 ml_state = MLState()
+
+def add_alert(alert_data):
+    """Add alert to in-memory storage"""
+    ml_state.alerts.insert(0, alert_data)  # Add to beginning
+    if len(ml_state.alerts) > ml_state.max_alerts:
+        ml_state.alerts = ml_state.alerts[:ml_state.max_alerts]  # Keep only recent alerts
 
 def load_ml_models():
     """Load trained ML models"""
@@ -134,28 +142,43 @@ def fallback_detection(event_data):
     """Fallback rule-based detection when ML models unavailable"""
     score = 0.0
     path = str(event_data.get('path', '')).lower()
+    query = str(event_data.get('query', '')).lower()
     user_agent = str(event_data.get('user_agent', '')).lower()
+    full_url = f"{path}?{query}" if query else path
     
-    # SQL injection
-    if any(x in path for x in ['union', 'select', 'drop', "' or '", '--']):
-        score += 0.8
+    # SQL injection patterns
+    sql_patterns = ['union', 'select', 'drop', "' or '", '--', 'insert', 'delete', 'update']
+    if any(x in full_url for x in sql_patterns):
+        score += 0.9
         attack_type = "SQL Injection"
-    # XSS
-    elif any(x in path for x in ['<script', 'javascript:', 'alert(']):
+    # XSS patterns
+    elif any(x in full_url for x in ['<script', 'javascript:', 'alert(', 'onerror=', 'onload=']):
+        score += 0.8
+        attack_type = "XSS Attack"
+    # Directory traversal
+    elif any(x in full_url for x in ['../', '..\\', '/etc/passwd', '/windows/system32']):
         score += 0.7
-        attack_type = "XSS"
-    # Bot
-    elif any(x in user_agent for x in ['bot', 'curl', 'sqlmap']):
+        attack_type = "Directory Traversal"
+    # Command injection
+    elif any(x in full_url for x in [';cat', '|ls', '&&', '`whoami`']):
+        score += 0.8
+        attack_type = "Command Injection"
+    # Bot detection
+    elif any(x in user_agent for x in ['sqlmap', 'nikto', 'nmap', 'curl', 'python-requests']):
         score += 0.6
-        attack_type = "Bot"
+        attack_type = "Bot Attack"
+    # Admin panel access
+    elif any(x in path for x in ['/admin', '/wp-admin', '/phpmyadmin', '/manager']):
+        score += 0.5
+        attack_type = "Admin Access Attempt"
     else:
-        attack_type = "Normal"
+        attack_type = "Normal Traffic"
     
     return {
-        "is_anomaly": score > 0.5,
+        "is_anomaly": score > 0.4,
         "confidence": min(score, 1.0),
         "attack_type": attack_type,
-        "method": "fallback_rules"
+        "method": "rule_based"
     }
 
 @app.on_event("startup")
@@ -193,7 +216,7 @@ async def predict_anomaly(request: Request):
         
         # Add request metadata
         event_data.update({
-            "client_ip": request.client.host,
+            "client_ip": event_data.get("ip", request.client.host),
             "timestamp": int(datetime.now().timestamp()),
             "method": event_data.get("method", "GET"),
             "path": event_data.get("path", "/"),
@@ -205,7 +228,7 @@ async def predict_anomaly(request: Request):
             # Use advanced ML prediction
             try:
                 result = ml_state.engine.predict_anomaly(event_data)
-                return {
+                prediction = {
                     "event_id": f"ml_{int(datetime.now().timestamp())}",
                     "is_anomaly": bool(result.get("is_anomaly", False)),
                     "confidence": float(result.get("confidence", 0.0)),
@@ -214,8 +237,29 @@ async def predict_anomaly(request: Request):
                     "method": "advanced_ml",
                     "model_version": "2.0.0",
                     "inference_time_ms": int(result.get("inference_time_ms", 0)),
-                    "model_scores": {k: float(v) for k, v in result.get("model_scores", {}).items()}
+                    "model_scores": {k: float(v) for k, v in result.get("model_scores", {}).items()},
+                    "source_ip": str(event_data.get("client_ip", "unknown"))
                 }
+                
+                # Store alert if anomaly detected
+                if prediction["is_anomaly"]:
+                    alert = {
+                        "id": prediction["event_id"],
+                        "timestamp": datetime.now().isoformat(),
+                        "anomaly_score": prediction["confidence"],
+                        "event_type": f"ML Detected: {prediction['attack_type']}",
+                        "source_ip": prediction["source_ip"],
+                        "attack_type": prediction["attack_type"],
+                        "method": "advanced_ml",
+                        "path": event_data.get("path", "/"),
+                        "query": event_data.get("query", ""),
+                        "user_agent": event_data.get("user_agent", "")
+                    }
+                    add_alert(alert)
+                    print(f"[ALERT] Anomaly detected: {alert['event_type']} from {alert['source_ip']}")
+                
+                return prediction
+                
             except Exception as e:
                 print(f"ML prediction error: {e}")
                 # Fall back to rule-based
@@ -224,7 +268,7 @@ async def predict_anomaly(request: Request):
             # Use fallback detection
             result = fallback_detection(event_data)
         
-        return {
+        prediction = {
             "event_id": f"rule_{int(datetime.now().timestamp())}",
             "is_anomaly": bool(result["is_anomaly"]),
             "confidence": float(result["confidence"]),
@@ -232,6 +276,25 @@ async def predict_anomaly(request: Request):
             "method": str(result["method"]),
             "source_ip": str(event_data.get("client_ip", "unknown"))
         }
+        
+        # Store alert if anomaly detected
+        if prediction["is_anomaly"]:
+            alert = {
+                "id": prediction["event_id"],
+                "timestamp": datetime.now().isoformat(),
+                "anomaly_score": prediction["confidence"],
+                "event_type": f"Rule Detected: {prediction['attack_type']}",
+                "source_ip": prediction["source_ip"],
+                "attack_type": prediction["attack_type"],
+                "method": "rule_based",
+                "path": event_data.get("path", "/"),
+                "query": event_data.get("query", ""),
+                "user_agent": event_data.get("user_agent", "")
+            }
+            add_alert(alert)
+            print(f"[ALERT] Rule-based detection: {alert['event_type']} from {alert['source_ip']}")
+        
+        return prediction
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
@@ -241,7 +304,7 @@ async def ingest_event(request: Request):
     """Legacy endpoint - redirects to ML prediction"""
     result = await predict_anomaly(request)
     
-    # Broadcast alert if anomaly detected
+    # Store alert if anomaly detected
     if result.get("is_anomaly"):
         alert = {
             "id": result.get("event_id"),
@@ -249,8 +312,10 @@ async def ingest_event(request: Request):
             "anomaly_score": result.get("confidence", 0),
             "event_type": f"Attack Detected: {result.get('attack_type')}",
             "source_ip": result.get("source_ip", "unknown"),
-            "attack_type": result.get("attack_type")
+            "attack_type": result.get("attack_type"),
+            "method": result.get("method", "advanced_ml")
         }
+        add_alert(alert)
         await manager.broadcast(alert)
     
     return result
@@ -258,16 +323,21 @@ async def ingest_event(request: Request):
 @app.get("/api/v1/alerts")
 async def get_alerts():
     """Get recent security alerts"""
-    return [
-        {
-            "id": "ml_alert_001",
-            "timestamp": datetime.now().isoformat(),
-            "anomaly_score": 0.88,
-            "event_type": "ML Detected Threat",
-            "source_ip": "192.168.1.100",
-            "method": "advanced_ml" if ml_state.available else "rule_based"
-        }
-    ]
+    # Return stored alerts or generate sample if none exist
+    if ml_state.alerts:
+        return ml_state.alerts[:100]  # Return last 100 alerts
+    else:
+        # Return sample alert if no real alerts exist
+        return [
+            {
+                "id": "sample_alert_001",
+                "timestamp": datetime.now().isoformat(),
+                "anomaly_score": 0.75,
+                "event_type": "System Ready - Monitoring Active",
+                "source_ip": "system",
+                "method": "advanced_ml" if ml_state.available else "rule_based"
+            }
+        ]
 
 @app.get("/api/v1/status")
 async def get_status():

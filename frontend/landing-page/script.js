@@ -38,37 +38,6 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Clear form fields
-function clearForm(formId) {
-    const form = document.getElementById(formId);
-    form.reset();
-    
-    // Clear password strength indicator
-    const strengthDiv = document.getElementById('passwordStrength');
-    if (strengthDiv) {
-        strengthDiv.style.display = 'none';
-        strengthDiv.className = 'password-strength';
-    }
-    
-    // Reset input border colors
-    form.querySelectorAll('input').forEach(input => {
-        input.style.borderColor = 'rgba(0, 255, 255, 0.3)';
-    });
-    
-    // Reset password toggles to hidden state
-    form.querySelectorAll('input[type="text"]').forEach(input => {
-        if (input.id.includes('Password')) {
-            input.type = 'password';
-            const toggle = input.nextElementSibling;
-            if (toggle && toggle.classList.contains('password-toggle')) {
-                const icon = toggle.querySelector('i');
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-    });
-}
-
 // Password Toggle Function
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
@@ -146,6 +115,37 @@ function validateEmail(email) {
     }
     
     return { valid: true };
+}
+
+// Clear form fields
+function clearForm(formId) {
+    const form = document.getElementById(formId);
+    form.reset();
+    
+    // Clear password strength indicator
+    const strengthDiv = document.getElementById('passwordStrength');
+    if (strengthDiv) {
+        strengthDiv.style.display = 'none';
+        strengthDiv.className = 'password-strength';
+    }
+    
+    // Reset input border colors
+    form.querySelectorAll('input').forEach(input => {
+        input.style.borderColor = 'rgba(0, 255, 255, 0.3)';
+    });
+    
+    // Reset password toggles to hidden state
+    form.querySelectorAll('input[type="text"]').forEach(input => {
+        if (input.id.includes('Password')) {
+            input.type = 'password';
+            const toggle = input.nextElementSibling;
+            if (toggle && toggle.classList.contains('password-toggle')) {
+                const icon = toggle.querySelector('i');
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    });
 }
 
 // Authentication Functions
@@ -376,9 +376,9 @@ document.addEventListener('keydown', function(e) {
 
 // Module URLs
 const MODULE_URLS = {
-    anomaly: 'https://nitedu.in/anomaly',
-    phishing: 'https://nitedu.in/phishing', 
-    insider: 'https://nitedu.in/insider'
+    anomaly: '../anomaly-dashboard/index.html',
+    phishing: '../phishing-dashboard/index.html', 
+    insider: '../insider-dashboard/index.html'
 };
 
 function loadModule(moduleType) {
@@ -388,14 +388,13 @@ function loadModule(moduleType) {
         return;
     }
     
-    const container = document.getElementById('module-container');
-    const frame = document.getElementById('module-frame');
-    
-    if (MODULE_URLS[moduleType] && moduleType === 'anomaly') {
-        frame.src = MODULE_URLS[moduleType];
-        container.classList.remove('hidden');
+    if (moduleType === 'anomaly') {
+        // Open anomaly dashboard in new tab
+        window.open(MODULE_URLS[moduleType], '_blank');
+    } else if (moduleType === 'phishing' || moduleType === 'insider') {
+        showNotification(`${moduleType.charAt(0).toUpperCase() + moduleType.slice(1)} module is under development by the team`);
     } else {
-        showNotification(`${moduleType} module is under development by the team`);
+        showNotification(`${moduleType} module is under development`);
     }
 }
 
